@@ -3,6 +3,8 @@ const express = require("express");
 const Posts = require("./posts-model");
 const router = express.Router();
 
+//test//
+
 router.get("/", (req, res) => {
   Posts.find()
     .then((posts) => {
