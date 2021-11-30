@@ -1,6 +1,5 @@
 // implement your posts router here
 const express = require("express");
-const { useStore } = require("react-redux");
 const Posts = require("./posts-model");
 const router = express.Router();
 
@@ -45,5 +44,19 @@ router.delete("/:id", async (req, res) => {
     res.status(500).json({ message: "The post could not be removed" });
   }
 });
+
+router.post("/", async (req, res) => {
+    if (!req.body.title || !req.body.contents) {
+        res.status(400).json({ message: "Please provide title and contents for the post" })
+    } else {
+        try {
+           const { id } = await Posts.insert(req.body)
+           const post = await Posts.findById(id)
+           res.status(201).json(post) 
+        } catch(err){
+            res.status(500).json({ message: "There was an error while saving the post to the database" })
+        }
+    }
+})
 
 module.exports = router;
