@@ -3,8 +3,6 @@ const express = require("express");
 const Posts = require("./posts-model");
 const router = express.Router();
 
-//test//
-
 router.get("/", (req, res) => {
   Posts.find()
     .then((posts) => {
@@ -88,6 +86,24 @@ router.put("/:id", async (req, res) => {
         .status(500)
         .json({ message: "The post information could not be modified" });
     }
+  }
+});
+
+router.get("/:id/comments", async (req, res) => {
+  try {
+    const post = await Posts.findById(req.params.id);
+    if (!post) {
+      res
+        .status(404)
+        .json({ message: "The post with the specified ID does not exist" });
+    } else {
+      const comments = await Posts.findPostComments(req.params.id);
+      res.json(comments);
+    }
+  } catch (err) {
+    res
+      .status(500)
+      .json({ message: "The comments information could not be retrieved" });
   }
 });
 
